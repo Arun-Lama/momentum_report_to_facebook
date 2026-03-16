@@ -1,31 +1,35 @@
 import os
-import requests
 from pathlib import Path
 
-# Only load .env file in local development (not on GitHub Actions)
-if os.path.exists(".env"):
-    from dotenv import load_dotenv
-    load_dotenv()  # Load the environment variables from .env file
+import requests
 
-# Read environment variables
-page_id = os.getenv("FB_PAGE_ID")
-access_token = os.getenv("FB_PAGE_ACCESS_TOKEN")
-print(f"FB_PAGE_ID is: {page_id}")
-print(f"FB_PAGE_ACCESS_TOKEN is: {access_token}")
 
-# Ensure that both environment variables are set
-if not page_id:
-    raise RuntimeError("Error: Missing environment variable 'FB_PAGE_ID'. Ensure it's set in the environment.")
-    
-if not access_token:
-    raise RuntimeError("Error: Missing environment variable 'FB_PAGE_ACCESS_TOKEN'. Ensure it's set in the environment.")
+def load_local_env_if_present():
+    # Only load .env in local development
+    if os.path.exists(".env"):
+        from dotenv import load_dotenv
+        load_dotenv()
 
-# Debug print to ensure the environment variables are being read correctly
-print(f"Using Facebook Page ID: {page_id}")
 
-# --------------------------------------------------
-# Upload a single image to Facebook Page
-# --------------------------------------------------
+def get_facebook_credentials():
+    load_local_env_if_present()
+
+    page_id = os.getenv("FB_PAGE_ID")
+    access_token = os.getenv("FB_PAGE_ACCESS_TOKEN")
+
+    if not page_id:
+        raise RuntimeError(
+            "Error: Missing environment variable 'FB_PAGE_ID'. Ensure it's set in the environment."
+        )
+
+    if not access_token:
+        raise RuntimeError(
+            "Error: Missing environment variable 'FB_PAGE_ACCESS_TOKEN'. Ensure it's set in the environment."
+        )
+
+    return page_id, access_token
+
+
 def upload_image_unpublished(image_path, page_id, access_token):
     """
     Upload image to Facebook without publishing.
@@ -37,7 +41,7 @@ def upload_image_unpublished(image_path, page_id, access_token):
         files = {"source": image_file}
         data = {
             "published": "false",
-            "access_token": access_token
+            "access_token": access_token,
         }
 
         response = requests.post(url, files=files, data=data)
@@ -49,18 +53,13 @@ def upload_image_unpublished(image_path, page_id, access_token):
 
     return response.json()["id"]
 
+
 def post_multiple_images_single_post(
     charts_dir,
-    caption="📊 Market Charts Summary"
+    caption="📊 Market Charts Summary",
 ):
-    # Ensure that the environment variables are correctly loaded
-    page_id = os.getenv("FB_PAGE_ID")
-    access_token = os.getenv("FB_PAGE_ACCESS_TOKEN")
+    page_id, access_token = get_facebook_credentials()
 
-    if not page_id or not access_token:
-        raise RuntimeError("Error: Missing Facebook environment variables")
-
-    # List and sort images in the provided directory
     image_paths = sorted(Path(charts_dir).glob("*.png"))
 
     if not image_paths:
@@ -75,7 +74,7 @@ def post_multiple_images_single_post(
         media_id = upload_image_unpublished(
             image_path=str(image_path),
             page_id=page_id,
-            access_token=access_token
+            access_token=access_token,
         )
         media_fbids.append({"media_fbid": media_id})
 
@@ -85,7 +84,7 @@ def post_multiple_images_single_post(
     data = {
         "message": caption,
         "attached_media": media_fbids,
-        "access_token": access_token
+        "access_token": access_token,
     }
 
     response = requests.post(post_url, json=data)
@@ -97,3 +96,8 @@ def post_multiple_images_single_post(
 
     print("✅ Single multi-image post created successfully!")
     return response.json()
+
+
+if __name__ == "__main__":
+    # Example direct-run usage
+    post_multiple_images_single_post("charts")
