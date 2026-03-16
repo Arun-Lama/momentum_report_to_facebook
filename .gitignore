@@ -1,0 +1,6 @@
+.env
+__pycache__/
+*.pyc
+.vscode/
+sectorwise_momentum/*.png
+stockwise_momentum/*.png
