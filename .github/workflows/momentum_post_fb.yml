@@ -3,13 +3,13 @@ name: Run post_to_facebook.py
 on:
   workflow_dispatch:
   schedule:
-    # 6:30 PM Nepal Time = 12:45 PM UTC
-    # Sunday to Thursday
     - cron: "45 12 * * 0-4"
 
 jobs:
   post-to-facebook:
     runs-on: ubuntu-latest
+    env:
+      HUB_TOKEN: ${{ secrets.HUB_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -27,13 +27,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run analysis
+      - name: Run analysis and post
         run: python analysis.py
         env:
           HUB_TOKEN: ${{ secrets.HUB_TOKEN }}
-
-      - name: Run Facebook posting script
-        run: python post_to_facebook.py
-        env:
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
