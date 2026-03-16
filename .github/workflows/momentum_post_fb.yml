@@ -26,7 +26,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Facebook posting script
-        run: python post_to_facebook.py
+        run: python analysis.py
         env:
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
