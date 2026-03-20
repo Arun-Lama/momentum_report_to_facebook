@@ -1,0 +1,3 @@
+from momentum_analysis_gemini import gemini_momentum_analysis
+
+print(gemini_momentum_analysis())

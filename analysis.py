@@ -1,13 +1,14 @@
 import os
 from collections import OrderedDict
 from io import StringIO
-
+from market_analysis import ai_analysis
 import requests
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from momentum_analysis_gemini import gemini_momentum_analysis
+from adjusted_price_data import get_adjusted_price_of_all_companies, indices_data
 
-from adjusted_price_data import get_adjusted_price_of_all_companies
 
 
 def prepare_pivot(df, column_name="Ticker"):
@@ -118,10 +119,8 @@ def plot_momentum_charts(price_df, output_dir, title_prefix, top_n=None):
 adjusted_data = get_adjusted_price_of_all_companies()
 adjusted_pivot_df = prepare_pivot(adjusted_data, column_name="Ticker")
 
-url = "https://raw.githubusercontent.com/Arun-Lama/download-nepse-indices/main/indices/indices_data.csv"
-response = requests.get(url)
-response.raise_for_status()
-indices_df = pd.read_csv(StringIO(response.text))
+
+indices_df = indices_data()
 indices_pivot_df = prepare_pivot(indices_df, column_name="Ticker")
 
 plot_momentum_charts(
@@ -142,6 +141,6 @@ plot_momentum_charts(
 from post_to_facebook import post_multiple_images_single_post
 
 
-post_multiple_images_single_post("sectorwise_momentum", "Sectorwise momentum across different time periods.")
-post_multiple_images_single_post("stockwise_momentum", "Top 10 stock across different time periods.")
+post_multiple_images_single_post("sectorwise_momentum", ai_analysis(indices_df))
+post_multiple_images_single_post("stockwise_momentum", gemini_momentum_analysis(adjusted_data))
 print('sector wise accumulation charts posted to facebook successfully!')
