@@ -113,7 +113,6 @@ def plot_momentum_charts(price_df, output_dir, title_prefix, top_n=None):
         print("Files in folder:", os.listdir("stockwise_momentum"))
         filename = f"{i:02d}_{label.replace('-', '_')}.png"
         fig.write_image(os.path.join(output_dir, filename), scale=2)
-        print("Saved:", filepath, "Exists?", os.path.exists(filepath))
 
 
 adjusted_data = get_adjusted_price_of_all_companies()
