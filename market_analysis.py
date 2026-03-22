@@ -166,5 +166,6 @@ def ai_analysis(indices_dataset):
 
     # Generate the response using Gemini
     gemini_output = generate_response(prompt_text)
-    cleaned_response = re.sub(r'\*\*(.*?)\*\*', r'\1', gemini_output)
+    cleaned_response = re.sub(r'\*\*(.*?)\*\*', r'\1', gemini_output)  # remove bold
+    cleaned_response = re.sub(r'^#+\s*', '', cleaned_response, flags=re.MULTILINE)  # remove ###, ##, #    return cleaned_response
     return cleaned_response
