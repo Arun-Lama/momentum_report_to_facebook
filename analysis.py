@@ -111,9 +111,11 @@ def plot_momentum_charts(price_df, output_dir, title_prefix, top_n=None):
                 showline=True
             )
         )
-
+        print("Files in folder:", os.listdir("sectorwise_momentum"))
+        print("Files in folder:", os.listdir("stockwise_momentum"))
         filename = f"{i:02d}_{label.replace('-', '_')}.png"
         fig.write_image(os.path.join(output_dir, filename), scale=2)
+        print("Saved:", filepath, "Exists?", os.path.exists(filepath))
 
 
 adjusted_data = get_adjusted_price_of_all_companies()
@@ -122,6 +124,9 @@ adjusted_pivot_df = prepare_pivot(adjusted_data, column_name="Ticker")
 
 indices_df = indices_data()
 indices_pivot_df = prepare_pivot(indices_df, column_name="Ticker")
+
+print("Adjusted data shape:", adjusted_data.shape)
+print("Indices data shape:", indices_df.shape)
 
 plot_momentum_charts(
     price_df=indices_pivot_df,
