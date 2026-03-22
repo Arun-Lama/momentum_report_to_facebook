@@ -1,15 +1,13 @@
 import os
 from collections import OrderedDict
-from io import StringIO
 from market_analysis import ai_analysis
-import requests
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from momentum_analysis_gemini import gemini_momentum_analysis
 from adjusted_price_data import get_adjusted_price_of_all_companies, indices_data
 
-
+print("SCRIPT STARTED")
 
 def prepare_pivot(df, column_name="Ticker"):
     df = df.copy()
