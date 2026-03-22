@@ -4,3 +4,6 @@ __pycache__/
 .vscode/
 sectorwise_momentum/*.png
 stockwise_momentum/*.png
+stockwise_momentum/*.gitkeep
+sectorwise_momentum/*.gitkeep
+
