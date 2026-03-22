@@ -4,3 +4,4 @@ requests
 plotly
 kaleido
 python-dotenv
+google-generativeai

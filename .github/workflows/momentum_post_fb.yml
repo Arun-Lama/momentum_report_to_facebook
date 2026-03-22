@@ -1,4 +1,4 @@
-name: Run post_to_facebook.py
+name: Run analysis.py
 
 on:
   workflow_dispatch:
